@@ -3,24 +3,34 @@ import Congruencial from '../components/Congruencial'
 import Cuadrados from '../components/Cuadrados'
 import Multiplicador from '../components/Multiplicador'
 import Step from '../components/Step'
+import { validateMedias, validateUniformidad, validateVarianza, validateIndependencia } from '../utils/tests'
 
-import { getProbability } from '../utils/tests'
-import Input from "../components/Input";
+const TestResult = ({ name, results, conclussion }) => (
+	<div className='container'>
+		<h4 className="title">{name}</h4>
+		<p>{results}</p>
+		<p>{conclussion}</p>
+		<style jsx>{`
+			.container {
+				margin: 20px 0;
+			}
 
+			.title {
+				margin-right: 10px;
+			}
+		`}
+		</style>
+	</div>
+)
 
 
 export default class Aleatorios extends React.Component {
 	state = {
-		algorithm: "cuadrados"
-	}
-
-	runTests() {
-		
+		algorithm: "cuadrados",
+		percentage: "90"
 	}
 
 	render() {
-		getProbability(15.95);
-
 		console.log(this.state)
 
 		return (
@@ -42,7 +52,7 @@ export default class Aleatorios extends React.Component {
 
 				{this.state.results &&
 					<section>
-						<Step number='3' title='Resultados'>
+						<Step number='3' title='Números generados'>
 							<div className='numbers'>
 								{this.state.results.numbers.map((number, index) => (
 									<span className='number' key={index}>{number}</span>
@@ -51,11 +61,27 @@ export default class Aleatorios extends React.Component {
 						</Step>
 
 						<Step number='4' title='Pruebas de aletoriedad'>
-							<Input label="Porcentaje de probabilidad" onChange={e => this.setState({ probability: e.target.value })} />
-							<button onClick={() => this.runTests()}>Validar</button>
+							Porcentaje de probabilidad
+							<div className="percentage">
+								<div className="slidecontainer">
+									<input type="range" min="1" max="100" className="slider" value={this.state.percentage} onChange={e => this.setState(({ percentage: e.target.value }))} />
+								</div>
+								{this.state.percentage}
+							</div>
+
+							<button onClick={() => this.setState(({ tests: true }))}>Validar</button>
 						</Step>
 					</section>
 				}
+
+				{this.state.tests && <section>
+					<Step number='5' title='Resultados de pruebas'>
+						<TestResult {...validateMedias((100 - this.state.percentage) / 100, this.state.results.numbers)} />
+						<TestResult {...validateVarianza((100 - this.state.percentage) / 100, this.state.results.numbers)} />
+						<TestResult {...validateUniformidad((100 - this.state.percentage) / 100, this.state.results.numbers)} />
+						<TestResult {...validateIndependencia((100 - this.state.percentage) / 100, this.state.results.numbers)} />
+					</Step>
+				</section>}
 
 
 
@@ -63,6 +89,11 @@ export default class Aleatorios extends React.Component {
 				<style jsx>{`
 					.container {
 						padding: 30px;
+					}
+
+					.percentage {
+						display: flex;
+						margin-bottom: 10px;
 					}
 
 					.number {
@@ -78,6 +109,41 @@ export default class Aleatorios extends React.Component {
 						height: 40px;
 						display: flex;
 						align-items: center;
+					}
+
+					.slidecontainer {
+						width: 70%; /* Width of the outside container */
+						margin-right: 10px;
+					}
+
+					.slider {
+						-webkit-appearance: none;
+						width: 100%;
+						height: 15px;
+						border-radius: 5px;  
+						background: #d3d3d3;
+						outline: none;
+						opacity: 0.7;
+						-webkit-transition: .2s;
+						transition: opacity .2s;
+					}
+
+					.slider::-webkit-slider-thumb {
+						-webkit-appearance: none;
+						appearance: none;
+						width: 25px;
+						height: 25px;
+						border-radius: 50%; 
+						background: #4CAF50;
+						cursor: pointer;
+					}
+
+					.slider::-moz-range-thumb {
+						width: 25px;
+						height: 25px;
+						border-radius: 50%;
+						background: #4CAF50;
+						cursor: pointer;
 					}
 				`}
 				</style>

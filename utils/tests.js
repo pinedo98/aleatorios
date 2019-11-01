@@ -63,7 +63,7 @@ function compute(argument) {
 }
 
 
-export function getProbability(val) {
+export function testing() {
 
   // console.log("Medias: " + validateMedias(.05, [.92, .012, 0.2352, 0.5319, 0.2917, 0.5088]))
 
@@ -78,19 +78,27 @@ export function getProbability(val) {
   console.log("Validate independecia" + validateIndependencia(0.5, [0.97, .11, .65, .26, .98, .03, .13, .89, .21, .69]))
 }
 
-function validateMedias(alpha, numbers) {
+export function validateMedias(alpha, numbers) {
   let avg = getAverage(numbers);
   let lowLimit = .5 - getZ(alpha / 2) * (1 / Math.sqrt(12 * numbers.length));
   let highLimit = .5 + getZ(alpha / 2) * (1 / Math.sqrt(12 * numbers.length));
 
   console.log(highLimit + " > " + avg + " > " + lowLimit)
-  return (avg > lowLimit && avg < highLimit)
+  let conclussion = "Se rechaza que el conjunto tiene un valor esperado de .5"
+  if (avg > lowLimit && avg < highLimit) {
+    conclussion = "No se rechaza que el conjunto tiene un valor esperado de .5"
+  }
+  return {
+    name: 'Prueba de medias',
+    results: highLimit + " > " + avg + " > " + lowLimit,
+    conclussion,
+  }
 }
 
-function validateIndependencia(alpha, numbers) {
+export function validateIndependencia(alpha, numbers) {
   //Creamos una lista para guardar los ceros y unos.
   let bits = [];
-  let i, corridas, dato,  media, varianza, z;
+  let i, corridas, dato, media, varianza, z;
   //Revisa si cada dato actual es menor al dato anterior. 
   //Si es así, se guarda un 0, de lo contrario, se guarda un 1
   for (i = 1; i < numbers.length; i++) {
@@ -124,47 +132,70 @@ function validateIndependencia(alpha, numbers) {
   //Aplicamos las fórmulas para media, varianza y Z.
   media = (2 * numbers.length - 1) / 3;
   console.log("Media: " + media);
-  varianza = (16 * numbers.length - 29) /  90;
+  varianza = (16 * numbers.length - 29) / 90;
   console.log("Varianza: " + varianza);
   z = Math.abs((corridas - media) / Math.sqrt(varianza));
   console.log("Z=" + z);
 
   //Obtenemos el valor Z de la tabla de distribución normal
-  let  zn = getZ(1 - alpha / 2);
-  //Comparamos: si es mayor mi valor Z al de la tabla, no pasa
+  let zn = getZ(1 - alpha / 2);
+
+
+  let conclussion = "No se rechaza que el conjunto es independiente"
   if (z < zn) {
-    console.log("No se rechaza que son independientes. ");
-  }
-  else {
-    console.log("No Pasa la prueba de corridas");
+    conclussion = "Se rechaza que el conjunto es independiente"
   }
 
-  return z<zn;
+  return {
+    name: 'Prueba de independencia (corridas arriba y abajo)',
+    results: zn + " > " + z,
+    conclussion,
+  }
 }
 
 
-function validateVarianza(alpha, numbers) {
+export function validateVarianza(alpha, numbers) {
   let avg = getAverage(numbers);
   let sum = 0;
   numbers.forEach(number => sum += Math.pow(number - avg, 2));
   let variance = sum / (numbers.length - 1);
   console.log(variance)
 
-  let highLimit = getX(alpha / 2, numbers.length - 1) / (12 * numbers.length - 1);
-  let lowLimit = getX(1 - (alpha / 2), numbers.length - 1) / (12 * numbers.length - 1);
+  try {
 
-  console.log("X^2: ")
-  console.log(getX(alpha / 2, numbers.length - 1));
-  console.log("X^2: ")
-  console.log(getX(1 - (alpha / 2), numbers.length - 1));
+    let highLimit = getX(alpha / 2, numbers.length - 1) / (12 * numbers.length - 1);
+    let lowLimit = getX(1 - (alpha / 2), numbers.length - 1) / (12 * numbers.length - 1);
 
-  console.log(highLimit + " > " + variance + " > " + lowLimit)
-  return (variance > lowLimit && variance < highLimit);
+    console.log("X^2: ")
+    console.log(getX(alpha / 2, numbers.length - 1));
+    console.log("X^2: ")
+    console.log(getX(1 - (alpha / 2), numbers.length - 1));
+
+    console.log(highLimit + " > " + variance + " > " + lowLimit)
+
+    let conclussion = "Se rechaza que el conjunto tiene una varianza de 1/12"
+    if (variance > lowLimit && variance < highLimit) {
+      conclussion = "No se rechaza que el conjunto tiene una varianza de 1/12"
+    }
+
+    return {
+      name: 'Prueba de varianza',
+      results: highLimit + " > " + variance + " > " + lowLimit,
+      conclussion,
+    }
+
+  } catch (e) {
+    return {
+      name: 'Prueba de varianza',
+      results: "N/A",
+      conclussion: "Pi es demasiado grande, no se pudo encontrar chi cuadrado",
+    }
+  }
 }
 
 
 // Kolmogorov-Smirnov Test
-function validateUniformidad(alpha, numbers) {
+export function validateUniformidad(alpha, numbers) {
   numbers = numbers.sort((a, b) => a - b);
 
   let dPlusValues = [];
@@ -184,15 +215,27 @@ function validateUniformidad(alpha, numbers) {
 
   let kolmogorov = getKolmogorovValue(alpha, numbers.length)
 
-  console.log(d + " > " + kolmogorov)
+  console.log(dMax + " > " + kolmogorov)
 
-  return (d > kolmogorov);
+
+  let conclussion = "Se rechaza que el conjunto sigue una distribución uniforme"
+  if (dMax > kolmogorov) {
+    conclussion = "No se rechaza que el conjunto sigue una distribución uniforme"
+  }
+
+  return {
+    name: 'Prueba de uniformidad (Kolmogorov-Smirnov)',
+    results: dMax + " > " + kolmogorov,
+    conclussion,
+  }
 }
 
 
 function getX(pi, theta) {
   let index = chiPi.indexOf(pi);
 
+  console.log("Theta: " + theta)
+  console.log("pi: " + pi)
   if (theta > 30) {
     theta = parseInt((theta / 10).toFixed(0)) * 10
     console.log(theta);
@@ -204,11 +247,19 @@ function getX(pi, theta) {
 
 function getKolmogorovValue(d, degrees) {
   let index = dAlphas.indexOf(d);
-  // TODO adapt for values greater than 50
+
+  console.log("D: " + d)
+  console.log("Degrees: " + degrees)
+
+  if (degrees > 50) {
+    return divders[index] / Math.sqrt(degrees)
+  }
+
   return freeDegrees[degrees + ""][Number(index)];
 }
 
 const dAlphas = [0.20, 0.10, 0.05, 0.02, 0.01, 0.005, 0.002, 0.001]
+const divders = [1.07, 1.22, 1.36, 1.52, 1.63, 1.73, 1.85, 1.95]
 const freeDegrees = {
   "1": [0.90000, 0.95000, 0.97500, 0.99000, 0.99500, 0.99750, 0.99900, 0.99950],
   "2": [0.68337, 0.77639, 0.84189, 0.90000, 0.92929, 0.95000, 0.96838, 0.97764],
