@@ -2,11 +2,11 @@ export function generateWithCongruencial(seed, k, mod) {
   let constant = 3 + (8 * k)
   
   let numbers = [];
-  while(numbers.length < 1001) {
+  while(numbers.length < 100001) {
     let xi = (constant * seed) % mod;
     let ri = xi / (mod - 1);
-    if ((numbers.includes(Number("." + ri)))) break;
-    numbers.push(Number("." + ri));
+    if ((numbers.includes(Number(ri)))) break;
+    numbers.push(Number(ri));
     seed = xi;
   }
   return numbers;
@@ -17,7 +17,7 @@ export function generateWithCuadrados(seed) {
   let x1 = seed;
   let numbers = [];
 
-  while(numbers.length < 1001) {
+  while(numbers.length < 100001) {
     let y1 = Math.pow(x1, 2);
     let y1Digits = y1.toString().length;
     let temp = (y1Digits - digits) / 2;
@@ -35,7 +35,7 @@ export function generateWithMultiplicador(seed, a) {
 
   let x1 = 0;
 
-  while(numbers.length < 1001) {
+  while(numbers.length < 10001) {
     let y0 = seed * a;
     let y0Digits = y0.toString().length;
     let temp = (y0Digits - digits) / 2;

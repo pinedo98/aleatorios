@@ -36,8 +36,6 @@ export default class Aleatorios extends React.Component {
 	}
 
 	render() {
-		console.log(this.state)
-
 		return (
 			<Layout>
 				<section className='container'>
@@ -65,6 +63,7 @@ export default class Aleatorios extends React.Component {
 										<span className='number' key={index}>{number}</span>
 									))}
 								</div>
+								Cantidad de números generados: {this.state.results.numbers.length}
 							</Step>
 
 							<Step number='4' title='Pruebas de aletoriedad'>
@@ -134,10 +133,11 @@ export default class Aleatorios extends React.Component {
 				}
 
 				.numbers {
-					overflow-x: scroll;
+					overflow-x: auto;
 					height: 40px;
 					display: flex;
 					align-items: center;
+					margin: 10px;
 				}
 
 				.slidecontainer {

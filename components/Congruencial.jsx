@@ -12,8 +12,6 @@ export default class Congruencial extends React.Component {
 			numbers
 		}
 
-		console.log(results);
-
 		this.props.onGenerate(results);
 	}
 
