@@ -21,7 +21,7 @@ export default class Cuadrados extends React.Component {
 		return (
 			<section className='container'>
 				<div>
-					<Input label='Semilla' onChange={e => this.setState({ seed: e.target.value }) }/>
+					<Input label='Semilla' onChange={e => this.setState({ seed: e.target.value }) } placeholder='Más de 3 dígitos' />
 
 					<button onClick={() => this.generate()}> Generar </button>
 				</div>

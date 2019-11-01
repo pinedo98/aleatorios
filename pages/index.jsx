@@ -13,6 +13,8 @@ const TestResult = ({ name, results, conclussion }) => (
 		<style jsx>{`
 			.container {
 				margin: 20px 0;
+				margin-right: 15px;
+				width: 250px;
 			}
 
 			.title {
@@ -66,7 +68,7 @@ export default class Aleatorios extends React.Component {
 								<div className="slidecontainer">
 									<input type="range" min="1" max="100" className="slider" value={this.state.percentage} onChange={e => this.setState(({ percentage: e.target.value }))} />
 								</div>
-								{this.state.percentage}
+								{this.state.percentage}%
 							</div>
 
 							<button onClick={() => this.setState(({ tests: true }))}>Validar</button>
@@ -76,15 +78,14 @@ export default class Aleatorios extends React.Component {
 
 				{this.state.tests && <section>
 					<Step number='5' title='Resultados de pruebas'>
-						<TestResult {...validateMedias((100 - this.state.percentage) / 100, this.state.results.numbers)} />
-						<TestResult {...validateVarianza((100 - this.state.percentage) / 100, this.state.results.numbers)} />
-						<TestResult {...validateUniformidad((100 - this.state.percentage) / 100, this.state.results.numbers)} />
-						<TestResult {...validateIndependencia((100 - this.state.percentage) / 100, this.state.results.numbers)} />
+						<div className='tests'>
+							<TestResult {...validateMedias((100 - this.state.percentage) / 100, this.state.results.numbers)} />
+							<TestResult {...validateVarianza((100 - this.state.percentage) / 100, this.state.results.numbers)} />
+							<TestResult {...validateUniformidad((100 - this.state.percentage) / 100, this.state.results.numbers)} />
+							<TestResult {...validateIndependencia((100 - this.state.percentage) / 100, this.state.results.numbers)} />
+						</div>
 					</Step>
 				</section>}
-
-
-
 
 				<style jsx>{`
 					.container {
@@ -114,6 +115,11 @@ export default class Aleatorios extends React.Component {
 					.slidecontainer {
 						width: 70%; /* Width of the outside container */
 						margin-right: 10px;
+					}
+
+					.tests {
+						display: flex;
+						flex-wrap: wrap;
 					}
 
 					.slider {

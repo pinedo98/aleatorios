@@ -1,5 +1,5 @@
-export function generateWithCongruencial(seed, k, mod, add) {
-  let constant = Number(add) + (8 * k)
+export function generateWithCongruencial(seed, k, mod) {
+  let constant = 3 + (8 * k)
   
   let numbers = [];
   while(numbers.length < 1001) {
