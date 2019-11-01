@@ -4,7 +4,7 @@ const Step = ({number, title, children}) => (
 			<h3 className='title'>{number}</h3>
 			<h3>{title}</h3>
 		</div>
-		<hr />
+		
 		{children}
 		<style jsx>{`
 			.container {

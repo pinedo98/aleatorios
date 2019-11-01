@@ -8,12 +8,11 @@ const Input = ({label, onChange, ...props}) => (
 			}
 
 			.input {
-				max-width: 380px;
 			}
 
 			.container {
 				margin: 10px 0;
-				width: 200px;
+				max-width: 380px;
 				display: flex;
 				justify-content: space-between;
 			}
