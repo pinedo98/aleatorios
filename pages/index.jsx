@@ -1,12 +1,19 @@
 import React from "react";
 import Congruencial from '../components/Congruencial'
+import Cuadrados from '../components/Cuadrados'
+import Multiplicador from '../components/Multiplicador'
 import Step from '../components/Step'
 
 
 export default class Aleatorios extends React.Component {
-	state = {}
-	
+	state = {
+		algorithm: "cuadrados"
+	}
+
 	render() {
+
+		console.log(this.state)
+
 		return (
 			<section className='container'>
 				<h1>Generador de números pseudoaleatorios</h1>
@@ -19,11 +26,50 @@ export default class Aleatorios extends React.Component {
 				</Step>
 
 				<Step number='2' title='Parámetros'>
-					{this.state.algorithm == 'congruencial' && <Congruencial />}
+					{this.state.algorithm == 'congruencial' && <Congruencial onGenerate={results => this.setState({ results })} />}
+					{this.state.algorithm == 'multiplicador' && <Multiplicador onGenerate={results => this.setState({ results })} />}
+					{this.state.algorithm == 'cuadrados' && <Cuadrados onGenerate={results => this.setState({ results })} />}
 				</Step>
+
+				{this.state.results &&
+					<section>
+						<Step number='3' title='Resultados'>
+							<div className='numbers'>
+								{this.state.results.numbers.map((number, index) => (
+									<span className='number' key={index}>{number}</span>
+								))}
+							</div>
+						</Step>
+
+						<Step number='4' title='Pruebas'>
+							<div className='numbers'>
+
+							</div>
+						</Step>
+					</section>
+				}
+
+
+
+
 				<style jsx>{`
 					.container {
 						padding: 30px;
+					}
+
+					.number {
+						margin-right: 20px;
+					}
+
+					.number:hover{
+						font-size: larger;
+					}
+
+					.numbers {
+						overflow-x: scroll;
+						height: 40px;
+						display: flex;
+						align-items: center;
 					}
 				`}
 				</style>
