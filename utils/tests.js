@@ -64,19 +64,18 @@ function compute(argument) {
 
 
 export function getProbability(val) {
-  // const normDist = new NormalDistribution(0, 1);
-  // console.log(normDist.pdf(5.995))
-  // console.log(normDist.cdf(5.995))
-  // console.log(normDist.zScore(.5))
-  // console.log(compute(.1))
+
   // console.log("Medias: " + validateMedias(.05, [.92, .012, 0.2352, 0.5319, 0.2917, 0.5088]))
 
   // console.log("Validate uniformidad" + validateUniformidad(0.5, [0.97, .11, .65, .26, .98, .03, .13, .89, .21, .69]))
-  console.log(validateVarianza(.05, [0.0449, 0.1733, 0.5746, 0.049, 0.8406, 0.8349, 0.92, 0.2564,
-    0.6015, 0.6694, 0.3972, 0.7025, 0.1055, 0.1247, 0.1977, 0.0125,
-    0.63, 0.2531, 0.8297, 0.6483, 0.6972, 0.9582, 0.9085, 0.8524,
-    0.5514, 0.0316, 0.3587, 0.7041, 0.5915, 0.2523, 0.2545, 0.3044,
-    0.0207, 0.1067, 0.3587, 0.1746, 0.3362, 0.1589, 0.3727, 0.4145]))
+
+  // console.log(validateVarianza(.05, [0.0449, 0.1733, 0.5746, 0.049, 0.8406, 0.8349, 0.92, 0.2564,
+  //   0.6015, 0.6694, 0.3972, 0.7025, 0.1055, 0.1247, 0.1977, 0.0125,
+  //   0.63, 0.2531, 0.8297, 0.6483, 0.6972, 0.9582, 0.9085, 0.8524,
+  //   0.5514, 0.0316, 0.3587, 0.7041, 0.5915, 0.2523, 0.2545, 0.3044,
+  //   0.0207, 0.1067, 0.3587, 0.1746, 0.3362, 0.1589, 0.3727, 0.4145]))
+
+  console.log("Validate independecia" + validateIndependencia(0.5, [0.97, .11, .65, .26, .98, .03, .13, .89, .21, .69]))
 }
 
 function validateMedias(alpha, numbers) {
@@ -84,7 +83,63 @@ function validateMedias(alpha, numbers) {
   let lowLimit = .5 - getZ(alpha / 2) * (1 / Math.sqrt(12 * numbers.length));
   let highLimit = .5 + getZ(alpha / 2) * (1 / Math.sqrt(12 * numbers.length));
 
+  console.log(highLimit + " > " + avg + " > " + lowLimit)
   return (avg > lowLimit && avg < highLimit)
+}
+
+function validateIndependencia(alpha, numbers) {
+  //Creamos una lista para guardar los ceros y unos.
+  let bits = [];
+  let i, corridas, dato,  media, varianza, z;
+  //Revisa si cada dato actual es menor al dato anterior. 
+  //Si es así, se guarda un 0, de lo contrario, se guarda un 1
+  for (i = 1; i < numbers.length; i++) {
+    if (numbers[i] <= numbers[i - 1]) {
+      bits.push(0);
+    }
+    else {
+      bits.push(1);
+    }
+  }
+
+  //Imprimimos la cadena de ceros y unos
+  for (i = 0; i < bits.length; i++) {
+    console.log(bits[i]);
+  }
+
+  //Contamos las corridas. 
+  corridas = 1;
+  //Comenzamos observando el primer dígito
+  dato = bits[0];
+  //Comparamos cada dígito con el observado, cuando cambia es 
+  //una nueva corrida
+  for (i = 1; i < bits.length; i++) {
+    if (bits[i] != dato) {
+      corridas++;
+      dato = bits[i];
+    }
+  }
+  console.log("Corridas " + corridas);
+
+  //Aplicamos las fórmulas para media, varianza y Z.
+  media = (2 * numbers.length - 1) / 3;
+  console.log("Media: " + media);
+  varianza = (16 * numbers.length - 29) /  90;
+  console.log("Varianza: " + varianza);
+  z = Math.abs((corridas - media) / Math.sqrt(varianza));
+  console.log("Z=" + z);
+
+  //Obtenemos el valor Z de la tabla de distribución normal
+  let  zn = getZ(1 - alpha / 2);
+  //Comparamos: si es mayor mi valor Z al de la tabla, no pasa
+  if (z < zn) {
+    console.log("No se rechaza que son independientes. ");
+  }
+  else {
+    console.log("No Pasa la prueba de corridas");
+  }
+
+  return z<zn;
 }
 
 
@@ -92,7 +147,7 @@ function validateVarianza(alpha, numbers) {
   let avg = getAverage(numbers);
   let sum = 0;
   numbers.forEach(number => sum += Math.pow(number - avg, 2));
-  let variance = sum/(numbers.length - 1);
+  let variance = sum / (numbers.length - 1);
   console.log(variance)
 
   let highLimit = getX(alpha / 2, numbers.length - 1) / (12 * numbers.length - 1);
@@ -128,8 +183,8 @@ function validateUniformidad(alpha, numbers) {
   let dMax = Math.max(dLessMax, dPlusMax);
 
   let kolmogorov = getKolmogorovValue(alpha, numbers.length)
-  
-  console.log(d + " > " +kolmogorov)
+
+  console.log(d + " > " + kolmogorov)
 
   return (d > kolmogorov);
 }
