@@ -1,4 +1,3 @@
-import NormalDistribution from 'normal-distribution'
 
 function getZ(alpha) {
   const zValues = {
@@ -65,7 +64,7 @@ function compute(argument) {
 
 
 export function getProbability(val) {
-  const normDist = new NormalDistribution(0, 1);
+  // const normDist = new NormalDistribution(0, 1);
   // console.log(normDist.pdf(5.995))
   // console.log(normDist.cdf(5.995))
   // console.log(normDist.zScore(.5))
