@@ -85,8 +85,8 @@ export default class Aleatorios extends React.Component {
 							<div className='tests'>
 								<TestResult {...validateMedias((100 - this.state.percentage) / 100, this.state.results.numbers)} />
 								<TestResult {...validateVarianza((100 - this.state.percentage) / 100, this.state.results.numbers)} />
-								<TestResult {...validateUniformidad((100 - this.state.percentage) / 100, this.state.results.numbers)} />
 								<TestResult {...validateIndependencia((100 - this.state.percentage) / 100, this.state.results.numbers)} />
+								<TestResult {...validateUniformidad((100 - this.state.percentage) / 100, this.state.results.numbers)} />
 							</div>
 						</Step>
 					</section>}

@@ -101,6 +101,7 @@ export function validateIndependencia(alpha, numbers) {
   let i, corridas, dato, media, varianza, z;
   //Revisa si cada dato actual es menor al dato anterior. 
   //Si es así, se guarda un 0, de lo contrario, se guarda un 1
+  console.log(numbers)
   for (i = 1; i < numbers.length; i++) {
     if (numbers[i] <= numbers[i - 1]) {
       bits.push(0);
@@ -121,6 +122,7 @@ export function validateIndependencia(alpha, numbers) {
   dato = bits[0];
   //Comparamos cada dígito con el observado, cuando cambia es 
   //una nueva corrida
+
   for (i = 1; i < bits.length; i++) {
     if (bits[i] != dato) {
       corridas++;
@@ -134,7 +136,7 @@ export function validateIndependencia(alpha, numbers) {
   console.log("Media: " + media);
   varianza = (16 * numbers.length - 29) / 90;
   console.log("Varianza: " + varianza);
-  z = Math.abs((corridas - media) / Math.sqrt(varianza));
+  z = Math.abs((corridas - media) /varianza);
   console.log("Z=" + z);
 
   //Obtenemos el valor Z de la tabla de distribución normal
@@ -196,16 +198,17 @@ export function validateVarianza(alpha, numbers) {
 
 // Kolmogorov-Smirnov Test
 export function validateUniformidad(alpha, numbers) {
-  numbers = numbers.sort((a, b) => a - b);
+  let numbersSorted = numbers;
+  let numbers2 = numbersSorted.sort((a, b) => a - b);
 
   let dPlusValues = [];
   let dLessValues = [];
 
-  numbers.forEach(number => {
-    let d = ((numbers.indexOf(number) + 1) / numbers.length) - number;
+  numbers2.forEach(number => {
+    let d = ((numbers2.indexOf(number) + 1) / numbers2.length) - number;
     dPlusValues.push(d);
-    let dLess = number - (numbers.indexOf(number) / numbers.length);
-    // console.log('indeeex> ' + number +' ' + numbers.indexOf(number)); 
+    let dLess = number - (numbers2.indexOf(number) / numbers2.length);
+     console.log('indeeex> ' + number +' ' + numbers2.indexOf(number)); 
     dLessValues.push(dLess);
   });
 
@@ -213,7 +216,14 @@ export function validateUniformidad(alpha, numbers) {
   let dLessMax = Math.max(...dLessValues);
   let dMax = Math.max(dLessMax, dPlusMax);
 
-  let kolmogorov = getKolmogorovValue(alpha, numbers.length)
+  console.log("dPlusMax")
+  console.log(dPlusMax)
+  console.log("dLessMax")
+  console.log(dLessMax)
+  console.log("dMax")
+  console.log(dMax)
+
+  let kolmogorov = getKolmogorovValue(alpha, numbers2.length)
 
   console.log(dMax + " > " + kolmogorov)
 
