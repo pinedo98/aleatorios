@@ -7,13 +7,9 @@ export default class Congruencial extends React.Component {
 
 	generate() {
 		let numbers = generateWithCongruencial(this.state.seed, this.state.constant, this.state.mod, this.state.add);
-		let mediaTest = false;
-		let varianzaTest = false;
-		let independenciaTest = false;
-		let uniformidadTest = false;
 
 		let results = {
-			numbers, mediaTest, varianzaTest, independenciaTest, uniformidadTest
+			numbers
 		}
 
 		console.log(results);

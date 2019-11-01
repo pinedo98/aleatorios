@@ -7,13 +7,9 @@ export default class Cuadrados extends React.Component {
 
 	generate() {
 		let numbers = generateWithCuadrados(this.state.seed);
-		let mediaTest = false;
-		let varianzaTest = false;
-		let independenciaTest = false;
-		let uniformidadTest = false;
-
+		
 		let results = {
-			numbers, mediaTest, varianzaTest, independenciaTest, uniformidadTest
+			numbers
 		}
 
 		console.log(results);

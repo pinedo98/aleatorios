@@ -7,13 +7,9 @@ export default class Multiplicador extends React.Component {
 
 	generate() {
 		let numbers = generateWithMultiplicador(this.state.seed, this.state.a);
-		let mediaTest = false;
-		let varianzaTest = false;
-		let independenciaTest = false;
-		let uniformidadTest = false;
 
 		let results = {
-			numbers, mediaTest, varianzaTest, independenciaTest, uniformidadTest
+			numbers
 		}
 
 		console.log(results);
