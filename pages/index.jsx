@@ -4,13 +4,22 @@ import Cuadrados from '../components/Cuadrados'
 import Multiplicador from '../components/Multiplicador'
 import Step from '../components/Step'
 
+import { getProbability } from '../utils/tests'
+import Input from "../components/Input";
+
+
 
 export default class Aleatorios extends React.Component {
 	state = {
 		algorithm: "cuadrados"
 	}
 
+	runTests() {
+		
+	}
+
 	render() {
+		getProbability(15.95);
 
 		console.log(this.state)
 
@@ -41,10 +50,9 @@ export default class Aleatorios extends React.Component {
 							</div>
 						</Step>
 
-						<Step number='4' title='Pruebas'>
-							<div className='numbers'>
-
-							</div>
+						<Step number='4' title='Pruebas de aletoriedad'>
+							<Input label="Porcentaje de probabilidad" onChange={e => this.setState({ probability: e.target.value })} />
+							<button onClick={() => this.runTests()}>Validar</button>
 						</Step>
 					</section>
 				}
