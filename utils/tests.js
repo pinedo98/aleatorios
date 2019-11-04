@@ -198,9 +198,60 @@ export function validateVarianza(alpha, numbers) {
   }
 }
 
+export function validateUniformidad(alpha, numbers) {
+  return validateWithChiSquare(alpha, numbers);
+}
+
+function validateWithChiSquare(alpha, numbers) {
+  let m = Math.sqrt(numbers.length);
+  let a = 1 / m;
+  let categories = [];
+  console.log("m: " + m)
+  console.log("a: " + a)
+
+  for (let i = 0; i < m; i++) {
+    categories[i] = 0;
+  }
+
+  numbers.forEach(number => {
+    for (let i = 0; i < m; i++) {
+      let min = i * a;
+      let max = min + a;
+      if (number > min && number <= max) {
+        categories[i]++;
+        break;
+      }
+    }
+  })
+
+  let expectedFrequency = numbers.length / m;
+  let x = 0;
+  categories.forEach(category => {
+    x += Math.pow((expectedFrequency - category), 2) / expectedFrequency;
+  })
+
+  console.log("categories: " + categories);
+  console.log("x obtained: " + x);
+
+  console.log("x from table: " + getX(alpha, (m - 1).toFixed(0)));
+
+  let conclussion = "Se rechaza que el conjunto sigue una distribución uniforme."
+  if (getX(alpha, (m - 1).toFixed(0)) > x.toFixed(4)) {
+    conclussion = "No se rechaza que el conjunto sigue una distribución uniforme."
+  }
+
+  return {
+    name: 'Prueba de uniformidad (Chi-cuadrada)',
+    results: getX(alpha, (m - 1).toFixed(0)) + " > " + x.toFixed(4),
+    conclussion,
+    success: getX(alpha, (m - 1).toFixed(0)) > x.toFixed(4)
+  }
+
+
+}
 
 // Kolmogorov-Smirnov Test
-export function validateUniformidad(alpha, numbers) {
+function validateWithKolmogorov(alpha, numbers) {
   let numbersToSort = [...numbers]
   numbersToSort = numbersToSort.sort((a, b) => a - b);
   let numbers2 = numbersToSort;
