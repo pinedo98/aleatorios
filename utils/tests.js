@@ -150,7 +150,7 @@ export function validateIndependencia(alpha, numbers) {
 
   return {
     name: 'Prueba de independencia (corridas arriba y abajo)',
-    results: zn.toFixed(4) + " > " + z.toFixed(4),
+    results: z.toFixed(4) + " > " + zn.toFixed(4),
     conclussion,
     success: z >= zn
   }
