@@ -1,5 +1,4 @@
 import React from "react";
-import Head from 'next/head';
 
 import Congruencial from '../components/Congruencial'
 import Cuadrados from '../components/Cuadrados'
@@ -35,6 +34,17 @@ export default class Aleatorios extends React.Component {
 		percentage: "90"
 	}
 
+	runTests() {
+		let tests = {};
+		let alpha = (100 - this.state.percentage) / 100;
+		tests.medias = validateMedias(alpha, this.state.results.numbers);
+		tests.varianza = validateVarianza(alpha, this.state.results.numbers);
+		tests.independencia = validateIndependencia(alpha, this.state.results.numbers);
+		tests.uniformidad = validateUniformidad(alpha, this.state.results.numbers);
+		tests.conclussion = tests.medias.success && tests.varianza.success && tests.independencia.success && tests.uniformidad.success;
+		this.setState({ tests });
+	}
+
 	render() {
 		return (
 			<Layout>
@@ -60,7 +70,7 @@ export default class Aleatorios extends React.Component {
 							<Step number='3' title='Números generados'>
 								<div className='numbers'>
 									{this.state.results.numbers.map((number, index) => (
-										<span className='number' key={index}>{number}</span>
+										<span className='number' key={index}>{number.toFixed(4)}</span>
 									))}
 								</div>
 								Cantidad de números generados: {this.state.results.numbers.length}
@@ -70,12 +80,12 @@ export default class Aleatorios extends React.Component {
 								Porcentaje de probabilidad
 								<div className="percentage">
 									<div className="slidecontainer">
-										<input type="range" min="1" max="100" className="slider" value={this.state.percentage} onChange={e => this.setState(({ percentage: e.target.value }))} />
+										<input type="range" min="0" max="100" step="5" className="slider" value={this.state.percentage} onChange={e => this.setState(({ percentage: e.target.value }))} />
 									</div>
 									{this.state.percentage}%
 								</div>
 
-								<button onClick={() => this.setState(({ tests: true }))}>Validar</button>
+								<button onClick={() => this.runTests()}>Validar</button>
 							</Step>
 						</section>
 					}
@@ -83,11 +93,13 @@ export default class Aleatorios extends React.Component {
 					{this.state.tests && <section>
 						<Step number='5' title='Resultados de pruebas'>
 							<div className='tests'>
-								<TestResult {...validateMedias((100 - this.state.percentage) / 100, this.state.results.numbers)} />
-								<TestResult {...validateVarianza((100 - this.state.percentage) / 100, this.state.results.numbers)} />
-								<TestResult {...validateIndependencia((100 - this.state.percentage) / 100, this.state.results.numbers)} />
-								<TestResult {...validateUniformidad((100 - this.state.percentage) / 100, this.state.results.numbers)} />
+								<TestResult {...this.state.tests.medias} />
+								<TestResult  {... this.state.tests.varianza} />
+								<TestResult {...this.state.tests.independencia} />
+								<TestResult {...this.state.tests.uniformidad} />
 							</div>
+							<h3>Conclusión final</h3>
+							<p>El conjunto generado <b>{this.state.tests.conclussion ? '' : 'no'}</b> cumple con las propiedades de los números pseudoaleatorios.</p>
 						</Step>
 					</section>}
 
@@ -96,7 +108,7 @@ export default class Aleatorios extends React.Component {
 						<h5>
 							Para la materia de Simulación en el Instituto Tecnológico de Saltillo con la ayuda de MII. Adriana Cavazos Treviño
 						</h5>
-						<a href="https://github.com/pinedo98/aleatorios">Repositorio en Github</a>
+						<a href="https://github.com/pinedo98/aleatorios" target="_blank" >Repositorio en Github</a>
 					</section>
 				</section>
 				<style jsx>{`

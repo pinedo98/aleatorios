@@ -84,14 +84,15 @@ export function validateMedias(alpha, numbers) {
   let highLimit = .5 + getZ(alpha / 2) * (1 / Math.sqrt(12 * numbers.length));
 
   console.log(highLimit + " > " + avg + " > " + lowLimit)
-  let conclussion = "Se rechaza que el conjunto tiene un valor esperado de .5"
+  let conclussion = "Se rechaza que el conjunto tiene un valor esperado de 0.5."
   if (avg > lowLimit && avg < highLimit) {
-    conclussion = "No se rechaza que el conjunto tiene un valor esperado de .5"
+    conclussion = "No se rechaza que el conjunto tiene un valor esperado de 0.5."
   }
   return {
     name: 'Prueba de medias',
-    results: highLimit + " > " + avg + " > " + lowLimit,
+    results: highLimit.toFixed(4) + " > " + avg.toFixed(4) + " > " + lowLimit.toFixed(4),
     conclussion,
+    success: avg > lowLimit && avg < highLimit
   }
 }
 
@@ -101,7 +102,6 @@ export function validateIndependencia(alpha, numbers) {
   let i, corridas, dato, media, varianza, z;
   //Revisa si cada dato actual es menor al dato anterior. 
   //Si es así, se guarda un 0, de lo contrario, se guarda un 1
-  console.log(numbers)
   for (i = 1; i < numbers.length; i++) {
     if (numbers[i] <= numbers[i - 1]) {
       bits.push(0);
@@ -112,9 +112,9 @@ export function validateIndependencia(alpha, numbers) {
   }
 
   //Imprimimos la cadena de ceros y unos
-  for (i = 0; i < bits.length; i++) {
-    console.log(bits[i]);
-  }
+  // for (i = 0; i < bits.length; i++) {
+  // console.log(bits[i]);
+  // }
 
   //Contamos las corridas. 
   corridas = 1;
@@ -129,29 +129,30 @@ export function validateIndependencia(alpha, numbers) {
       dato = bits[i];
     }
   }
-  console.log("Corridas " + corridas);
+  // console.log("Corridas " + corridas);
 
   //Aplicamos las fórmulas para media, varianza y Z.
   media = (2 * numbers.length - 1) / 3;
-  console.log("Media: " + media);
+  // console.log("Media: " + media);
   varianza = (16 * numbers.length - 29) / 90;
-  console.log("Varianza: " + varianza);
-  z = Math.abs((corridas - media) /varianza);
-  console.log("Z=" + z);
+  // console.log("Varianza: " + varianza);
+  z = Math.abs((corridas - media) / varianza);
+  // console.log("Z=" + z);
 
   //Obtenemos el valor Z de la tabla de distribución normal
   let zn = getZ(1 - alpha / 2);
 
 
-  let conclussion = "No se rechaza que el conjunto es independiente"
+  let conclussion = "No se rechaza que el conjunto es independiente."
   if (z < zn) {
-    conclussion = "Se rechaza que el conjunto es independiente"
+    conclussion = "Se rechaza que el conjunto es independiente."
   }
 
   return {
     name: 'Prueba de independencia (corridas arriba y abajo)',
-    results: zn + " > " + z,
+    results: zn.toFixed(4) + " > " + z.toFixed(4),
     conclussion,
+    success: z >= zn
   }
 }
 
@@ -161,36 +162,38 @@ export function validateVarianza(alpha, numbers) {
   let sum = 0;
   numbers.forEach(number => sum += Math.pow(number - avg, 2));
   let variance = sum / (numbers.length - 1);
-  console.log(variance)
+  // console.log(variance)
 
   try {
 
     let highLimit = getX(alpha / 2, numbers.length - 1) / (12 * numbers.length - 1);
     let lowLimit = getX(1 - (alpha / 2), numbers.length - 1) / (12 * numbers.length - 1);
 
-    console.log("X^2: ")
-    console.log(getX(alpha / 2, numbers.length - 1));
-    console.log("X^2: ")
-    console.log(getX(1 - (alpha / 2), numbers.length - 1));
+    // console.log("X^2: ")
+    // console.log(getX(alpha / 2, numbers.length - 1));
+    // console.log("X^2: ")
+    // console.log(getX(1 - (alpha / 2), numbers.length - 1));
 
     console.log(highLimit + " > " + variance + " > " + lowLimit)
 
-    let conclussion = "Se rechaza que el conjunto tiene una varianza de 1/12"
+    let conclussion = "Se rechaza que el conjunto tiene una varianza de 1/12."
     if (variance > lowLimit && variance < highLimit) {
-      conclussion = "No se rechaza que el conjunto tiene una varianza de 1/12"
+      conclussion = "No se rechaza que el conjunto tiene una varianza de 1/12."
     }
 
     return {
       name: 'Prueba de varianza',
-      results: highLimit + " > " + variance + " > " + lowLimit,
+      results: highLimit.toFixed(4) + " > " + variance.toFixed(4) + " > " + lowLimit.toFixed(4),
       conclussion,
+      success: variance > lowLimit && variance < highLimit
     }
 
   } catch (e) {
     return {
       name: 'Prueba de varianza',
       results: "N/A",
-      conclussion: "Pi es demasiado grande, no se pudo encontrar chi cuadrado",
+      conclussion: "Pi es demasiado grande, no se pudo encontrar chi cuadrado.",
+      success: false
     }
   }
 }
@@ -198,17 +201,20 @@ export function validateVarianza(alpha, numbers) {
 
 // Kolmogorov-Smirnov Test
 export function validateUniformidad(alpha, numbers) {
-  let numbersSorted = numbers;
-  let numbers2 = numbersSorted.sort((a, b) => a - b);
+  let numbersToSort = [...numbers]
+  numbersToSort = numbersToSort.sort((a, b) => a - b);
+  let numbers2 = numbersToSort;
 
   let dPlusValues = [];
   let dLessValues = [];
+
+  console.log('PRUEBA DE UNIFORMIDAD');
 
   numbers2.forEach(number => {
     let d = ((numbers2.indexOf(number) + 1) / numbers2.length) - number;
     dPlusValues.push(d);
     let dLess = number - (numbers2.indexOf(number) / numbers2.length);
-     console.log('indeeex> ' + number +' ' + numbers2.indexOf(number)); 
+    console.log('Index: ' + number + ' ' + numbers2.indexOf(number));
     dLessValues.push(dLess);
   });
 
@@ -228,15 +234,16 @@ export function validateUniformidad(alpha, numbers) {
   console.log(dMax + " > " + kolmogorov)
 
 
-  let conclussion = "Se rechaza que el conjunto sigue una distribución uniforme"
+  let conclussion = "Se rechaza que el conjunto sigue una distribución uniforme."
   if (dMax > kolmogorov) {
-    conclussion = "No se rechaza que el conjunto sigue una distribución uniforme"
+    conclussion = "No se rechaza que el conjunto sigue una distribución uniforme."
   }
 
   return {
     name: 'Prueba de uniformidad (Kolmogorov-Smirnov)',
-    results: dMax + " > " + kolmogorov,
+    results: dMax.toFixed(4) + " > " + kolmogorov.toFixed(4),
     conclussion,
+    success: dMax > kolmogorov
   }
 }
 
@@ -262,6 +269,7 @@ function getKolmogorovValue(d, degrees) {
   console.log("Degrees: " + degrees)
 
   if (degrees > 50) {
+    console.log("IS MORE THAN 50")
     return divders[index] / Math.sqrt(degrees)
   }
 
